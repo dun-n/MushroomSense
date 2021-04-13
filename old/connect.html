@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mushroom Sense Connect</title>
+    <style>
+        body{
+            margin: 0;
+            color: #3a3a3a;
+        }
+        .header {
+            /*background: #161a1d;
+            color: #fff;*/
+            width: 100%;
+            padding: 30px;
+        }
+        .header .title {
+            font-size: 45px;
+        }
+        .header .subtitle{
+            font-size: 32px;
+        }
+        .content{
+            font-size: 20px;
+            padding: 0px 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="title">Mushroom Sense</div>
+    <div class="subtitle">By Myco Boy</div>
+</div>
+<div class="content">
+    <form method="post" id="connect-form">
+        <div>
+            <label for="ssid">SSID:</label>
+            <input name="ssid" id="ssid" type="text" maxlength="32">
+        </div>
+        <div>
+            <label for="password" >Password:</label>
+            <input name="password" type="password" id="password" maxlength="64">
+        </div>
+        <div>
+            <input type="checkbox" onclick="showPassword()">Show Password
+        </div>
+        <div>
+            <input type="submit" value="Connect">
+        </div>
+    </form>
+</div>
+<script>
+    function showPassword() {
+        const x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+
+    const form = document.getElementById("connect-form");
+
+    //call the connect function via ajax so page does not reload
+    function sendData() {
+        const XHR = new XMLHttpRequest();
+
+        // Bind the FormData object and the form element
+        const FD = new FormData( form );
+
+        // Define what happens on successful data submission
+        XHR.addEventListener( "load", function(event) {
+            alert( event.target.responseText );
+        } );
+
+        // Define what happens in case of error
+        XHR.addEventListener( "error", function( event ) {
+            alert( 'Oops! Something went wrong.' );
+        } );
+
+        // Set up our request
+        XHR.open( "POST", "http://192.168.4.1/connect" );
+
+        // The data sent is what the user provided in the form
+        XHR.send( FD );
+    }
+
+    // ...and take over its submit event.
+    form.addEventListener( "submit", function ( event ) {
+        event.preventDefault();
+        sendData();
+    } );
+</script>
+</body>
+</html>
