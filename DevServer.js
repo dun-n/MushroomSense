@@ -6,14 +6,12 @@ const fs = require('fs')
 
 const writeMultiPart = (req, res, parts) =>{
     if(parts && parts.length){
-      console.log(parts[0]);
       fs.readFile(parts[0], 'utf8' , (err, data) => {
         if (err) {
           console.error(err)
           res.end(err);
           return
         }
-        console.log(data)
         res.write(data, 'utf8', () => {
           parts.splice(0,1);
           writeMultiPart(req,res,parts)
@@ -28,7 +26,7 @@ const writeMultiPart = (req, res, parts) =>{
 app.get('/', (req, res) => {
   writeMultiPart(req,res,
     [
-      './src/main.html',
+      './src/web-interface/main.html',
       './DevENV.html'
     ]
   );
@@ -37,34 +35,17 @@ app.get('/', (req, res) => {
 app.get('/connect', (req, res) => {
   writeMultiPart(req,res,
     [
-      './src/connect.html',
+      './src/web-interface/connect.html',
       './DevENV.html'
     ]
   );
 });
 
-app.get('/settings', (req, res) => {
-  writeMultiPart(req,res,
-    [
-      './src/settings.html',
-      './DevENV.html',
-    ]
-  );
-});
-
-app.get('/status', (req, res) => {
-  writeMultiPart(req,res,
-    [
-      './src/status.html',
-      './DevENV.html',
-    ]
-  );
-});
 
 app.get('/hass', (req, res) => {
   writeMultiPart(req,res,
     [
-      './src/hass.html',
+      './src/web-interface/hass.html',
       './DevENV.html',
     ]
   );
@@ -74,26 +55,26 @@ app.get('/hass', (req, res) => {
 app.get('/rest', (req, res) => {
   writeMultiPart(req,res,
     [
-      './src/rest.html',
+      './src/web-interface/rest.html',
       './DevENV.html',
     ]
   );
 });
 
 app.get('/font.css', (req, res) => {
-  res.sendfile("./src/font.css")
+  res.sendfile("./src/web-interface/font.css")
 });
 
 app.get('/styles.css', (req, res) => {
-  res.sendfile("./src/styles.css")
+  res.sendfile("./src/web-interface/styles.css")
 });
 
 app.get('/nes.css', (req, res) => {
-  res.sendfile("./src/nes.css")
+  res.sendfile("./src/web-interface/nes.css")
 });
 
 app.get('/highlight.js', (req, res) => {
-  res.sendfile("./src/highlight.js")
+  res.sendfile("./src/web-interface/highlight.js")
 });
 
 
