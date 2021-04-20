@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MushroomSense</title>
+  <link rel="stylesheet" href="/nes.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/font.css">
+</head>
+<body>
+<div class="header">
+  <div style="display: inline-block">
+    <span class="logo"></span>
+  </div>
+  <div style="display: inline-block">
+    <div class="title">Mushroom Sense</div>
+    <div class="subtitle">By Myco Boy</div>
+  </div>
+  <div style="margin-top: 15px" id="nav-bar">
+    <a href="/" class="nes-btn is-dark" >Home</a>
+    <a href="/rest" class="nes-btn is-dark" >Rest API</a>
+    <a href="/hass" class="nes-btn is-dark" >Home Assistant</a>
+  </div>
+</div>
+<script src="/highlight.js"></script>
+<script>
+  var NODE_ENDPOINT = '/';
+  var SAP_ENDPOINT = '/';
+  var API_PATH = 'api/v1/';
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+<div class="content">
+  <div class="nes-container is-dark with-title">
+    <p class="title">GET Sensors</p>
+    Endpoint: /api/v1/sensors
+    <button onclick="getSensors()">Try It</button>
+    <div class="nes-container is-dark is-rounded ">
+      <div><pre><code class="JSON" id="get-sensor"></code></pre></div>
+    </div>
+  </div>
+  <div class="nes-container is-dark with-title">
+    <p class="title">GET Settings</p>
+    Endpoint: /api/v1/settings
+    <button onclick="getSettings()">Try It</button>
+    <div class="nes-container is-dark is-rounded ">
+      <div><pre><code class="JSON" id="get-settings"></code></pre></div>
+    </div>
+  </div>
+  <div class="nes-container is-dark with-title">
+    <p class="title">POST Settings</p>
+    Endpoint: /api/v1/settings
+    <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
+      <label for="refreshInterval" style="color:#fff;">refreshInterval</label>
+      <input type="text" id="refreshInterval" class="nes-input is-dark" >
+    </div>
+    <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
+      <label for="sleepDelay" style="color:#fff;">sleepDelay</label>
+      <input type="text" id="sleepDelay" class="nes-input is-dark" >
+    </div>
+    <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
+      <label for="nodeName" style="color:#fff;">nodeName</label>
+      <input type="text" id="nodeName" class="nes-input is-dark">
+    </div>
+    <button>Try It</button>
+    <div class="nes-container is-dark is-rounded ">
+      <div><pre><code class="JSON" id="post-settings"></code></pre></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function getSensors() {
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        const code = document.getElementById("get-sensor");
+        code.innerText = JSON.stringify(JSON.parse(this.responseText),null,2);
+        hljs.highlightBlock(code);
+      }
+    };
+    ajax.open("GET", NODE_ENDPOINT+API_PATH+"sensors",true);
+    ajax.send();
+  }
+
+  function getSettings() {
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        const code = document.getElementById("get-settings");
+        code.innerText = JSON.stringify(JSON.parse(this.responseText),null,2);
+        hljs.highlightBlock(code);
+      }
+    };
+    ajax.open("GET", NODE_ENDPOINT+API_PATH+"settings",true);
+    ajax.send();
+  }
+</script>
+
+
+
+</body></html>

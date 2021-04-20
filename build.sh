@@ -1,16 +1,59 @@
-#clear webpage.h
-echo '' > webpage.h
+#build webpage.h
+#this involves gzip-ing the files and building byte arrays of them that
+# can be stored in PROGMEM
 
-#write main.html
-html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true main.html > dist.html
-echo 'const char* MAIN_WEB_PAGE = ' >> webpage.h
-jsesc < dist.html -j >> webpage.h
-echo ';' >> webpage.h
+echo '' > ./src/arduino/Webpage.h
+cd ./src/web-interface/
+rm -rf dist
+mkdir dist
 
-#write connect.html
-html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true connect.html > dist.html
-echo 'const char* CONNECT_WEB_PAGE = ' >> webpage.h
-jsesc < dist.html -j >> webpage.h
-echo ';' >> webpage.h
+echo "======================="
+echo "gzip-ing html files"
+echo "======================="
 
-rm -rf dist.*
+for i in ./*.html; do
+    n=$(echo "$i" | sed -e 's/^..//g')
+    u=$(echo ${n^^} | sed -e 's/\.HTML//g')
+    echo "processing $n"
+    html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype --minify-css true --minify-js true ${i} > temp.html
+    echo "static const char HTML_$u[] PROGMEM = {" >> ../arduino/Webpage.h
+    gzip temp.html -c | xxd -i >> ../arduino/Webpage.h
+    gzip temp.html -c > ./dist/${n}.gz
+    echo "};" >> ../arduino/Webpage.h
+done
+
+echo "======================="
+echo "gzip-ing js files"
+echo "======================="
+
+for i in ./*.js; do
+    n=$(echo "$i" | sed -e 's/^..//g')
+    u=$(echo ${n^^} | sed -e 's/\.JS//g')
+    echo "processing $n"
+    echo "static const char JS_$u[] PROGMEM = {" >> ../arduino/Webpage.h
+    gzip ${i} -c | xxd -i >> ../arduino/Webpage.h
+    gzip ${i} -c > ./dist/${n}.gz
+    echo "};" >> ../arduino/Webpage.h
+done
+
+echo "======================="
+echo "gzip-ing css files"
+echo "======================="
+
+for i in ./*.css; do
+    n=$(echo "$i" | sed -e 's/^..//g')
+    u=$(echo ${n^^} | sed -e 's/\.CSS//g')
+    echo "processing $n"
+    html-minifier --collapse-whitespace --remove-comments --minify-css true ${i} > temp.css
+    echo "static const char CSS_$u[] PROGMEM = {" >> ../arduino/Webpage.h
+    gzip temp.css -c | xxd -i >> ../arduino/Webpage.h
+    gzip temp.css -c > ./dist/${n}.gz
+    echo "};" >> ../arduino/Webpage.h
+done
+
+rm -rf temp.*
+
+echo '' > extern.h
+
+
+echo "done!"

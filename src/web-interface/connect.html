@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MushroomSense</title>
+  <link rel="stylesheet" href="/nes.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/font.css">
+</head>
+<body>
+<div class="header">
+  <div style="display: inline-block">
+    <span class="logo"></span>
+  </div>
+  <div style="display: inline-block">
+    <div class="title">Mushroom Sense</div>
+    <div class="subtitle">By Myco Boy</div>
+  </div>
+</div>
+<script src="/highlight.js"></script>
+<script>
+  var NODE_ENDPOINT = '/';
+  var SAP_ENDPOINT = '/';
+  var API_PATH = 'api/v1/';
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+
+<div class="content">
+  <div class="nes-container is-dark with-title">
+    <p class="title">Connect WiFi</p>
+    <form method="post" id="connect-form">
+      <div class="form-item">
+        <label for="ssid">SSID:</label>
+        <input name="ssid" id="ssid" type="text" maxlength="32" class="nes-input is-dark">
+      </div>
+      <div class="form-item">
+        <label for="password" >Password:</label>
+        <input name="password" type="password" id="password" maxlength="64" class="nes-input is-dark">
+      </div>
+      <div class="form-item">
+        <label class="nes-checkbox-label">
+          <input type="checkbox" class="nes-checkbox is-dark" onclick="showPassword()" />
+          <span>Show Password</span>
+        </label>
+      </div>
+      <div class="form-item">
+        <input type="submit" value="Connect" class="nes-btn">
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  //hide nav bar
+  const nav = document.getElementById("nav-bar");
+  if(nav) nav.hidden = true;
+
+  function showPassword() {
+    const x = document.getElementById("password");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
+    }
+  }
+
+  const form = document.getElementById("connect-form");
+
+  //call the connect function via ajax so page does not reload
+  function sendData() {
+    const XHR = new XMLHttpRequest();
+
+    // Bind the FormData object and the form element
+    const FD = new FormData( form );
+
+    // Define what happens on successful data submission
+    XHR.addEventListener( "load", function(event) {
+      alert( event.target.responseText );
+    } );
+
+    // Define what happens in case of error
+    XHR.addEventListener( "error", function( event ) {
+      alert( 'Oops! Something went wrong.' );
+    } );
+
+    // Set up our request
+    XHR.open( "POST", SAP_ENDPOINT+API_PATH+"connect" );
+
+    // The data sent is what the user provided in the form
+    XHR.send( FD );
+  }
+
+  // ...and take over its submit event.
+  form.addEventListener( "submit", function ( event ) {
+    event.preventDefault();
+    sendData();
+  } );
+</script>
+
+
+
+
+
+</body></html>

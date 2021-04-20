@@ -1,0 +1,101 @@
+
+
+html{
+  cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABFklEQVRYR9WXURLDIAhE6/0PbSdOtUpcd1Gnpv1KGpTHBpCE1/cXq+vrMph7dGvXZTtpfW10DCA5jrH1H0Jhs5E0hnZdCR+vb5S8Nn8mQCeS9BdSalYJqMBjAGzq59xAESN7VFVUgV8AZB/dZBR7QTFDCqGquvUBVVoEtgIwpQRzmANSFHgWQKExHdIrPeuMvQNDarXe6nC/AutgV3JW+6bgqQLeV8FekRtgV+ToDKEKnACYKsfZjjkam7a0ZpYTytwmgainpC3HvwBocgKOxqRjehoR9DFKNFYtOwCGYCszobeCbl26N6yyQ6g8X/Wex/rBPsNEV6qAMaJPMynIHQCoSqS9JSMmwef51LflTgCRszU7DvAGiV6mHWfsaVUAAAAASUVORK5CYII=), auto;
+}
+
+
+p {
+  line-height: 20px;
+}
+
+.header{
+  margin: 20px 10% 20px 10%;
+}
+
+.title{
+  font-size: 32px;
+}
+.subtitle{
+  font-size: 24px;
+}
+
+.logo{
+  background-image: url('data:image/png;base64,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');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 75px;
+  image-rendering: pixelated;
+  width: 60px;
+  display: inline-block;
+}
+
+.content{
+  margin: 20px 10% 0px 10%;
+}
+
+.form-item{
+  margin-top: 10px;
+}
+
+.item{
+  padding: 5px;
+}
+
+.fade{
+  opacity: 0;
+  margin-top: -20px;
+  transition-property: opacity, margin;
+  transition-duration: 1s, 1s;
+}
+
+.show {
+  margin-top: 0px;
+  opacity: 1;
+}
+
+.hljs-number{
+  color: #B8D7A3;
+}
+
+.hljs-string {
+  color: #D69D85;
+}
+
+.hljs-template-variable {
+  color: #BD63C5;
+}
+
+.hljs-attr {
+  color: #9CDCFE;
+}
+
+.hljs-bullet{
+  color: #D7BA7D;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover{
+  background: #dedede;
+}
+::-webkit-scrollbar-track{
+  background: #212529;
+  border-radius: 0px;
+}
+
+.yaml-container{
+  line-height: 24px;
+  position: relative;
+}
+
+.yaml{
+  overflow: auto;
+  padding: 5px;
+}

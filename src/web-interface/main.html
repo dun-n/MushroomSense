@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MushroomSense</title>
+  <link rel="stylesheet" href="/nes.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/font.css">
+</head>
+<body>
+<div class="header">
+  <div style="display: inline-block">
+    <span class="logo"></span>
+  </div>
+  <div style="display: inline-block">
+    <div class="title">Mushroom Sense</div>
+    <div class="subtitle">By Myco Boy</div>
+  </div>
+  <div style="margin-top: 15px" id="nav-bar">
+    <a href="/" class="nes-btn is-dark" >Home</a>
+    <a href="/rest" class="nes-btn is-dark" >Rest API</a>
+    <a href="/hass" class="nes-btn is-dark" >Home Assistant</a>
+  </div>
+</div>
+<script src="/highlight.js"></script>
+<script>
+  var NODE_ENDPOINT = '/';
+  var SAP_ENDPOINT = '/';
+  var API_PATH = 'api/v1/';
+
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+
+
+<div class="content">
+  <div class="nes-container is-dark is-rounded">
+    <div class="item">
+      Temperature: <span id="temp">---</span> <span id="unit">C</span>
+    </div>
+    <div class="item">
+      Relative Humidity: <span id="rh">---</span> %
+    </div>
+    <div class="item">
+      CO2: <span id="co2">---</span> ppm
+    </div>
+  </div>
+</div>
+<script>
+  function getValues() {
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        var data = JSON.parse(this.responseText);
+        document.getElementById("temp").innerText = data['temperature_C'];
+        document.getElementById("unit").innerText = 'C';
+        document.getElementById("rh").innerText = data['relative_humidity'];
+        document.getElementById("co2").innerText = data['co2'];
+      }
+    };
+    ajax.open("GET", NODE_ENDPOINT+API_PATH+"sensors",true);
+    ajax.send();
+  }
+  getValues();
+  setInterval(getValues,2000);
+</script>
+
+
+
+
+</body></html>
