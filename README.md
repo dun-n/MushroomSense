@@ -26,6 +26,15 @@ essentially they measure some other gasses and use some math to make an educated
 future goal is to support one of these cheaper sensors so people can save some money and upgrade later if they wish. 
 If your looking to write some this project can be modified to support any sensor you want.
 
+
+## Flash The Code
+If you have the Arduino IDE you can open ./src/MushroomSense.ino and flash the project from there (You will need to install some libraries and configure 
+the board see Arduino IDE Setup bellow)
+
+If you just want the code on the board Run:
+* `pip install esptool`
+* `bash upload.sh {{PORT}}`
+
 ## Arduino IDE Setup 
 
 ### Set Up Board 

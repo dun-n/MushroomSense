@@ -62,3 +62,61 @@ float getDisplayTemp(float temp){
   }
   return temp;
 }
+
+#define SERIAL_INITIAL 0
+#define SERIAL_READ 1
+#define SERIAL_PROCESS 2
+
+#define PARSE_CMD 0
+#define PARSE_ARGS 1
+
+char serialBuffer[512];
+char serialCommand[512];
+uint16_t serialBufferLen = 0;
+uint16_t serailState = SERIAL_INITIAL;
+void handleSerialInput(){
+  while(Serial.available() > 0) {
+    // read the incoming byte:
+    char incomingByte = Serial.read();
+    if(serailState == SERIAL_INITIAL && incomingByte == '<'){ //start
+        serialBufferLen = 0;
+        serailState = SERIAL_READ;
+    } else {
+      if(incomingByte == '>'){ //end
+        serailState = SERIAL_PROCESS;
+      } else { // part of the message
+        if(incomingByte < 512){
+          serialBuffer[serialBufferLen] = incomingByte;
+          serialBufferLen++;
+        } else {
+          //buffer overflow
+          Serial.println("Command length > 512 char it was ignored");
+          serailState = SERIAL_INITIAL;
+        }
+      } 
+    }
+  }
+  if(serailState == SERIAL_PROCESS){
+    //handle the command
+    Serial.println(serialBuffer);
+    uint16_t parserIndex = 0;
+    uint16_t parserState = PARSE_CMD;
+    char* argPoinjters[4] = {serialBuffer,NULL,NULL,NULL};
+    uint16_t curArg = 1;
+    char cmd[32] = "";
+    for(uint16_t i = 0; i < serialBufferLen && curArg < 4; i++){
+        if(serialBuffer[i] == ':' || serialBuffer[i] == ','){
+          serialBuffer[i] = '\0';
+          argPoinjters[curArg] = serialBuffer+((i+1)*sizeof(char));
+          curArg++;
+        }
+    }
+    serailState = SERIAL_INITIAL;
+    if(strcmp(argPoinjters[0],"CONNECT_WIFI") == 0){
+        strcpy(staticData.ssid, argPoinjters[1]);
+        strcpy(staticData.password, argPoinjters[2]);
+        writeEEPROM();
+        currentPage = PAGE_WIFI_CONNECT;
+    }
+  }
+}

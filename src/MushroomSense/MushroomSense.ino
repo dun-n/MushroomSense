@@ -100,6 +100,7 @@ void loop() {
 void mainUpdate(){
   if(enableSensors) readSensors();
   handleUserInput();
+  handleSerialInput();
   server.handleClient();
   yield();
 }
