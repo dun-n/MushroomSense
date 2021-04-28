@@ -29,7 +29,7 @@ If your looking to write some this project can be modified to support any sensor
 ## Wizard 
 
 ### Linux 
-Download
+[Download](https://github.com/dun-n/MushroomSense/raw/main/src/wizard/dist/MushroomSenseWizard-Linux.zip)
 
 Unzip the folder and open it in a terminal window. run `./wizard`
 
