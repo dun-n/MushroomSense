@@ -1,7 +1,7 @@
 # MushroomSense
-**This project is still a work in progress.** I hope to make it a simple plug and play project eventually.
-I hope to have an install wizard in the future so folks don't need to deal with flashing the code from the 
-Arduino IDE.
+**This project is still a work in progress.** There is a python based install wizard with Windows, and Linux 
+executables. If someone wants to spend a bit of time building an executable for MacOS I'm sure other mac users 
+would appreciate it.
 
 I thought it would be cool to set up a fully automated mushroom farm. Much like animals, 
 mushrooms expel CO2 as a byproduct of respiration. As such CO2 levels can be an interesting 
@@ -26,6 +26,27 @@ essentially they measure some other gasses and use some math to make an educated
 future goal is to support one of these cheaper sensors so people can save some money and upgrade later if they wish. 
 If your looking to write some this project can be modified to support any sensor you want.
 
+## Wizard 
+
+### Linux 
+Download
+
+Unzip the folder and open it in a terminal window. run `./wizard`
+
+### Windows
+Download
+
+Unzip the folder and double click wizard.exe
+
+### MacOS
+Currently the only option is to run the wizard from source. The Windows and Linux executables are built using 
+pyinstaller which seems to have some problems with Big Sur. Unfortunately I don't have the time to figure out a 
+solution so if someone could build a MacOS executable and submit a pull request your contribution would be much 
+appreciated.
+
+`python3 ./src/wizard/wizard.py`
+
+There are several dependencies you may need to install.
 
 ## Flash The Code
 If you have the Arduino IDE you can open ./src/MushroomSense.ino and flash the project from there (You will need to install some libraries and configure 
