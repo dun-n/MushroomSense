@@ -29,12 +29,12 @@ If your looking to write some this project can be modified to support any sensor
 ## Wizard 
 
 ### Linux 
-[Download](https://github.com/dun-n/MushroomSense/raw/main/src/wizard/dist/MushroomSenseWizard-Linux.zip)
+[Download Wizard for Linux](https://github.com/dun-n/MushroomSense/raw/main/src/wizard/dist/MushroomSenseWizard-Linux.zip)
 
 Unzip the folder and open it in a terminal window. run `./wizard`
 
 ### Windows
-Download
+[Download Wizard for Windows](https://github.com/dun-n/MushroomSense/raw/main/src/wizard/dist/MushroomSenseWizard-Windows.zip)
 
 Unzip the folder and double click wizard.exe
 
@@ -47,6 +47,10 @@ appreciated.
 `python3 ./src/wizard/wizard.py`
 
 There are several dependencies you may need to install.
+
+`pip install pysimplegui`
+
+`pip install esptool`
 
 ## Flash The Code
 If you have the Arduino IDE you can open ./src/MushroomSense.ino and flash the project from there (You will need to install some libraries and configure 
