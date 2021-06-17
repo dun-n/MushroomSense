@@ -6,6 +6,27 @@ void initPeripherals(){
   pinMode(BUTTON_C, INPUT_PULLUP);
 }
 
+
+
+void initEEPROM(boolean fource){
+  struct { 
+    char initialized[16] = "INITIALIZED";
+    char ssid[32]     = "";
+    char password[64] = "";
+    uint16_t refreshInterval = 2;
+    unsigned int sleepDelay = 0;
+    char nodeName[16] = "MushroomSense";
+    char temperatureUnit = 'F';
+  } staticDataTemp;
+  uint addr = 0;
+  EEPROM.get(addr,staticDataTemp);
+  if(fource || strcmp(staticDataTemp.initialized,"INITIALIZED") != 0){
+    writeEEPROM();
+  } else {
+    readEEPROM();
+  }
+}
+
 void readEEPROM(){
   uint addr = 0;
   EEPROM.get(addr,staticData);
@@ -27,21 +48,7 @@ void factoryReset(){
     display.setCursor(0,0);
     display.print("Facotry Rest");
     display.display();
-    display.print(".");
-    display.display();
-    uint addr = 0;
-    strncpy(staticData.ssid,"",32);
-    display.print(".");
-    display.display();
-    strncpy(staticData.password,"",64);
-    display.print(".");
-    display.display();
-    EEPROM.put(addr,staticData);
-    display.print(".");
-    display.display();
-    EEPROM.commit(); 
-    display.print(".");
-    display.display();
+    initEEPROM(true);
     resetFunc();
   }
 }
@@ -116,7 +123,7 @@ void handleSerialInput(){
         strcpy(staticData.ssid, argPoinjters[1]);
         strcpy(staticData.password, argPoinjters[2]);
         writeEEPROM();
-        currentPage = PAGE_WIFI_CONNECT;
+        setupWifi(false);
     }
   }
 }

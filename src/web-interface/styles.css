@@ -28,6 +28,7 @@ p {
   image-rendering: pixelated;
   width: 60px;
   display: inline-block;
+  margin-right: 10px;
 }
 
 .content{

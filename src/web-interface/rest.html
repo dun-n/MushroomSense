@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/font.css">
 </head>
-<body>
+<body onload="getNodeName()">
 <div class="header">
   <div style="display: inline-block">
     <span class="logo"></span>
@@ -39,7 +39,7 @@
   <div class="nes-container is-dark with-title">
     <p class="title">GET Sensors</p>
     Endpoint: /api/v1/sensors
-    <button onclick="getSensors()">Try It</button>
+    <button onclick="getSensors()" class="nes-btn">Try It</button>
     <div class="nes-container is-dark is-rounded ">
       <div><pre><code class="JSON" id="get-sensor"></code></pre></div>
     </div>
@@ -47,7 +47,7 @@
   <div class="nes-container is-dark with-title">
     <p class="title">GET Settings</p>
     Endpoint: /api/v1/settings
-    <button onclick="getSettings()">Try It</button>
+    <button onclick="getSettings()" class="nes-btn">Try It</button>
     <div class="nes-container is-dark is-rounded ">
       <div><pre><code class="JSON" id="get-settings"></code></pre></div>
     </div>
@@ -55,19 +55,31 @@
   <div class="nes-container is-dark with-title">
     <p class="title">POST Settings</p>
     Endpoint: /api/v1/settings
+    <button onclick="postSettings()" class="nes-btn">Try It</button>
     <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
       <label for="refreshInterval" style="color:#fff;">refreshInterval</label>
-      <input type="text" id="refreshInterval" class="nes-input is-dark" >
+      <input type="number" min="2" value="2" id="refreshInterval" class="nes-input is-dark" >
     </div>
     <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
       <label for="sleepDelay" style="color:#fff;">sleepDelay</label>
-      <input type="text" id="sleepDelay" class="nes-input is-dark" >
+      <input type="number" min="0" value="0" id="sleepDelay" class="nes-input is-dark" >
     </div>
     <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
       <label for="nodeName" style="color:#fff;">nodeName</label>
       <input type="text" id="nodeName" class="nes-input is-dark">
     </div>
-    <button>Try It</button>
+    <div style="background-color:#212529; padding: 1rem;" class="nes-field ">
+      <label for="temperatureUnit" style="color:#fff;">temperatureUnit</label>
+      <select type="text" id="temperatureUnit" class="nes-input is-dark">
+        <option>F</option>
+        <option>C</option>
+      </select>
+    </div>
+    Payload:
+    <div class="nes-container is-dark is-rounded ">
+      <div><pre><code class="JSON" id="post-settings-payload"></code></pre></div>
+    </div>
+    Response:
     <div class="nes-container is-dark is-rounded ">
       <div><pre><code class="JSON" id="post-settings"></code></pre></div>
     </div>
@@ -100,6 +112,42 @@
     ajax.open("GET", NODE_ENDPOINT+API_PATH+"settings",true);
     ajax.send();
   }
+
+  function getNodeName(){
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        const nn = document.getElementById("nodeName");
+        nn.value = JSON.parse(this.responseText).nodeName;
+
+      }
+    };
+    ajax.open("GET", NODE_ENDPOINT+API_PATH+"settings",true);
+    ajax.send();
+  }
+
+  function postSettings(){
+    const ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        const code = document.getElementById("post-settings");
+        code.innerText = JSON.stringify(JSON.parse(this.responseText),null,2);
+        hljs.highlightBlock(code);
+      }
+    };
+    const body = {
+      "refreshInterval": document.getElementById("refreshInterval").value,
+      "sleepDelay": document.getElementById("sleepDelay").value,
+      "nodeName": document.getElementById("nodeName").value,
+      "temperatureUnit": document.getElementById("temperatureUnit").value
+    };
+    const payload = document.getElementById("post-settings-payload");
+    payload.innerText = JSON.stringify(JSON.stringify(body));
+    hljs.highlightBlock(payload);
+    ajax.open("POST", NODE_ENDPOINT+API_PATH+"settings",true);
+    ajax.send(JSON.stringify(body));
+  }
+
 </script>
 
 

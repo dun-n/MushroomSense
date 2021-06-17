@@ -19,11 +19,12 @@ Adafruit_SH110X display = Adafruit_SH110X(64, 128, &Wire);
 Adafruit_SCD30  scd30;
 ESP8266WebServer server(80);
 struct { 
-  char ssid[32]     = "Bill Wi The Science Fi";
-  char password[64] = "80553328";
+  char initialized[16]     = "INITIALIZED";
+  char ssid[32]     = "";
+  char password[64] = "";
   uint16_t refreshInterval = 2;
   unsigned int sleepDelay = 0;
-  char nodeName[16]     = "MushroomSence";
+  char nodeName[16] = "MushroomSense";
   char temperatureUnit = 'F';
 } staticData;
 
@@ -61,7 +62,7 @@ uint16_t currentPage = PAGE_SPLASH;
 unsigned long wakeTime = 0;
 
 
-boolean debug = true; //todo default to false for production
+boolean debug = false; //todo default to false for production
 
 //system setup
 void setup() {
@@ -69,12 +70,12 @@ void setup() {
   initPeripherals();
   // splash handles factory reset
   splash();
-  if(debug) Serial.begin(115200);
+  Serial.begin(115200);
   Serial.println("");
+  if(debug) Serial.setDebugOutput(true);
   initSensors();
-  writeEEPROM();
-  readEEPROM();
-  setupWifi();
+  initEEPROM(false);
+  setupWifi(false);
   setupServer();
   //setupAccessPoint();
   //setupWifi();

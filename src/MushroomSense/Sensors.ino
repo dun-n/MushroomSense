@@ -8,7 +8,7 @@ void initSensors(){
     Serial.println("Failed to find SCD30 chip");
   }
   Serial.println("SCD30 Found!");
-  if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
+  if (!scd30.setMeasurementInterval(2)){
     Serial.println("Failed to set measurement interval");
   }
 }
@@ -19,15 +19,25 @@ void initSensors(){
  */
 void readSensors(){
     if (scd30.dataReady()){
-    Serial.println("Data available!");
+    Serial.println("===== Data available =====");
  
     if (!scd30.read()){ Serial.println("Error reading sensor data"); return; }
     validReads ++;
     tempC = scd30.temperature;
     rh = scd30.relative_humidity;
     co2 = scd30.CO2;
+    Serial.print("TEMP: ");
+    Serial.println(tempC);
+    Serial.print("RH: ");
+    Serial.println(rh);
+    Serial.print("CO2: ");
+    Serial.println(co2);
+    Serial.println("==========================");
 
     if(validReads == 2){
+      if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
+        Serial.println("Failed to set measurement interval");
+      }
       initialized = true;
     }
   }

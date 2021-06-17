@@ -83,15 +83,21 @@ Tools -> Manage Libraries
 * Adafruit_SCD30
 * ArduinoJson
 
-## Compile and Upload
+### Compile and Upload
 At this point you should be able to compile and upload the sketch
 
-# Developing Web interface:
+# Developing Web interface
 
 `npm run dev`
+
+runs a node server on `http://localhost:3000` and redirects REST calls to your Feather HUZZAH connected to 
+your network. you can set the IP of your feather HUZZAH in the DevENV.html file. 
 
 `npm install html-minifier -g`
 
 then build with `bash build.sh`
+
+This creates ./src/MushroomSense/Webpage.h that will contain several c byte arrays. Each representing 
+one of the web assets gziped and ready to serve to a client from the esp server.
 
 

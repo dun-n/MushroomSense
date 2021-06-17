@@ -42,20 +42,21 @@
     <p>
       The following is a basic configuration that can be added to Home Assistants configuration.yaml
       file. It will add an entity to Home Assistant for the CO2, Temperature, and Humidity measured
-      by your Mushroom Sense sensor.
+      by your Mushroom Sense sensor. See
       <a href="https://www.home-assistant.io/docs/configuration/yaml/">
         Home Assistant's website
       </a>
+      for more information on yaml
     </p>
     <div class="nes-container is-dark is-rounded yaml-container">
       <div style="position: absolute; top: 0; right: 0;">
         <button style="z-index: 1000" onclick="CopyToClipboard('hass-code')" class="nes-btn is-dark" >Copy to Clipboard</button>
-        <div style="text-align: center;" class="fade" id="copied">
+        <div style="text-align: center; margin: 0px 50px; background: rgb(33 37 41 / 90%);" class="fade" id="copied">
           <span style="vertical-align: middle">Copied</span>
           <img style="vertical-align: middle; height: 35px;image-rendering: pixelated;" src="data:image/png;base64,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">
         </div>
       </div>
-      <pre><code class="YAML">sensor:
+      <pre><code class="YAML" id="hass-code">sensor:
   - platform: rest
     resource: <span class="res_data"></span>
     name: "Mushroom Sense Temperature"
@@ -104,7 +105,7 @@
   const ip = "192.168.0.223";
   elms.forEach(
     (elm)=>{
-      elm.innerHTML = "http://"+ip+"/data";
+      elm.innerHTML = "http://"+ip+"/api/v1/sensors";
     }
   )
 

@@ -47,14 +47,17 @@ void pageDispach(){
           currentPage = PAGE_TEMP_UNIT;
           Serial.println("PAGE_TEMP_UNIT");
           break;
+        case 6:
+          currentPage = PAGE_STATUS;
+          Serial.println("PAGE_STATUS");
+          break;
       }
       break;
     case PAGE_WIFI_CONFIG:
       setupAccessPoint();
-      currentPage = PAGE_MAIN_MENU;
       break;
     case PAGE_WIFI_CONNECT:
-      setupWifi();
+      setupWifi(true);
       break;
     case PAGE_REFRESH_INTERVAL:
       setNumber("Refresh Interval","s", staticData.refreshInterval,2,120);
@@ -79,6 +82,9 @@ void pageDispach(){
       }
       currentPage = PAGE_MAIN_MENU;
       break;
+    case PAGE_STATUS:
+      statusPage();
+      break;
     case PAGE_HOME:
     default:
       homePage();
@@ -86,6 +92,45 @@ void pageDispach(){
   }
 }
 
+void handleStatusInputs(char button, uint16_t state){
+  if(button == 'C' && state == LOW){
+    currentPage = PAGE_MAIN_MENU;
+  }
+}
+
+void statusPage(){
+  initializeInputs(&handleStatusInputs);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SH110X_WHITE);
+  display.setRotation(1);
+      while(currentPage == PAGE_STATUS){
+      display.clearDisplay();
+      if(isScreenOn()){
+        display.setCursor(0,0);
+        int wifiStatus = WiFi.status();
+        if(debug) WiFi.printDiag(Serial);
+        display.println("WIFI: ");
+        if(wifiStatus == WL_IDLE_STATUS) display.println("Idle");
+        else if(wifiStatus == WL_NO_SSID_AVAIL) display.println("No SSID Available");
+        else if(wifiStatus == WL_CONNECTED)display.println("Connected"); 
+        else if(wifiStatus == WL_CONNECT_FAILED) display.println("Connection Failed");
+        else if(wifiStatus == WL_WRONG_PASSWORD) display.println("Wrong Password");
+        else if(wifiStatus == WL_DISCONNECTED) display.println("Not Connected");
+        else display.println("Unknown");
+        display.setTextSize(.5);
+        display.println(" ");
+        display.setTextSize(1);
+        display.println("IP: ");
+        display.println(WiFi.localIP());
+        display.fillRect(0, 44, 16, 17, SH110X_WHITE);
+        display.drawBitmap(0, 44, BITMAP_BACK_ICON, 16, 17, SH110X_BLACK);
+      }
+      display.display();
+      yield();
+      mainUpdate();
+    }
+}
 
 void splash(){
   currentPage = PAGE_SPLASH;
@@ -122,8 +167,14 @@ void splash(){
   }
 }
 
+void handleSetupWifiReportInputs(char button, uint16_t state){
+  if(button == 'C' && state == LOW){
+    currentPage = PAGE_MAIN_MENU;
+  }
+}
 
-void setupWifi(){
+
+void setupWifi(boolean report){
   if(strlen(staticData.ssid) > 0 && strlen(staticData.password) > 0){
     initializeInputs(NULL);
     WiFi.begin(staticData.ssid, staticData.password);
@@ -156,7 +207,8 @@ void setupWifi(){
     animation2.startTime = animation1.startTime+1500;
     
     // Wait for connection
-    while(WiFi.status() != WL_CONNECTED){  
+    boolean connecting = true;
+    while(connecting){  
       display.clearDisplay();
       if(isScreenOn()){
         display.setCursor(0,0);
@@ -173,11 +225,72 @@ void setupWifi(){
         drawBeem(beem2+6);
         drawBeem(beem2+12);
       }
+      if(WiFi.status() == WL_CONNECTED){
+        connecting = false;
+        Serial.println("WIFI Connected ");
+      } else if(WiFi.status() == WL_NO_SSID_AVAIL){
+        connecting = false;
+        Serial.println("Connection failed");
+        Serial.println("SSID could not be reached");
+      } else if(WiFi.status() == WL_CONNECT_FAILED){
+        connecting = false;
+        Serial.println("Connection failed");
+      } else if(WiFi.status() == WL_WRONG_PASSWORD){
+        connecting = false;
+        Serial.println("Connection failed");
+        Serial.println("Wrong password");
+      }
       display.display();
       mainUpdate();
-    } 
+    }
+
+    if(report){
+      initializeInputs(&handleSetupWifiReportInputs);
+      while(currentPage == PAGE_WIFI_CONNECT){
+        display.clearDisplay();
+        if(isScreenOn()){
+          display.setCursor(0,0);
+          if(WiFi.status() == WL_CONNECTED){
+            printString("WIFI Connected", 0, 5, 1);
+          } else if(WiFi.status() == WL_DISCONNECTED){
+            printString("Disconnected", 0, 5, 1);
+          } else if(WiFi.status() == WL_NO_SSID_AVAIL){
+            printString("Failed", 0, 5, 1);
+            printString("SSID Unreachable", 0, 15, 1);
+          } else if(WiFi.status() == WL_CONNECT_FAILED){
+           printString("Failed", 0, 5, 1);
+          } else if(WiFi.status() == WL_WRONG_PASSWORD){
+            printString("Failed", 0, 5, 1);
+            printString("Wrong Password", 0, 15, 1);
+          }else {
+            display.println(WiFi.status());
+          }
+          display.fillRect(0, 44, 16, 17, SH110X_WHITE);
+          display.drawBitmap(0, 44, BITMAP_BACK_ICON, 16, 17, SH110X_BLACK);
+        }
+        display.display();
+        yield();
+        mainUpdate();
+      }
+    } else {
+      currentPage = PAGE_HOME;
+    }
+  } else {
+     initializeInputs(&handleSetupWifiReportInputs);
+      while(currentPage == PAGE_WIFI_CONNECT){
+        display.clearDisplay();
+        if(isScreenOn()){
+          display.setCursor(0,0);
+          printString("Please Configure", 0, 5, 1);
+          printString("WIFI Settings", 0, 15, 1);
+          display.fillRect(0, 44, 16, 17, SH110X_WHITE);
+          display.drawBitmap(0, 44, BITMAP_BACK_ICON, 16, 17, SH110X_BLACK);
+        }
+        display.display();
+        yield();
+        mainUpdate();
+      }
   }
-  currentPage = PAGE_HOME;
 }
 
 
@@ -186,7 +299,7 @@ const char *appassword = "mushlove";   // The password required to connect to it
 
 void handleConnectionInputs(char button, uint16_t state){
   if(button == 'C' && state == LOW){
-    currentPage = PAGE_HOME;
+    currentPage = PAGE_MAIN_MENU;
   }
 }
 
@@ -327,21 +440,19 @@ void homePage(){
     if(isScreenOn()){
       display.fillRect(0, 0, 16, 64, SH110X_WHITE);
       display.drawBitmap(0, 24, BITMAP_MENU_ICON, 16, 17, SH110X_BLACK);
-      display.setCursor(24, 0);
-      display.print("Main Page");
   
-      display.setCursor(24, 10);
+      display.setCursor(24, 15);
       display.print("Temp: ");
       display.print(getDisplayTemp(tempC));
       display.print(" ");
       display.print(staticData.temperatureUnit);
   
-      display.setCursor(24, 20);
+      display.setCursor(24, 25);
       display.print("RH: ");
       display.print(rh);
       display.print(" %");
   
-      display.setCursor(24, 30);
+      display.setCursor(24, 35);
       display.print("CO2: ");
       display.print(co2, 3);
       display.print(" ppm");
@@ -386,6 +497,10 @@ void handleMenuButtons(char button, uint16_t state){
 }
 
 void menu(char** menu, uint16_t len, int sel){
+  currentMin = 0;
+  if(sel >= 6){
+    currentMin = min(len-6,sel);
+  }
   currentMenuLength = len;
   initializeInputs(&handleMenuButtons, sel);
   while(!commit){

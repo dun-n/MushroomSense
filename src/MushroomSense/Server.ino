@@ -6,12 +6,12 @@ void handle_root() {
   //todo for dev only
   server.sendHeader("Access-Control-Allow-Origin", "*");
   if(connecting){
-    long len = sizeof(HTML_MAIN);
+    long len = sizeof(HTML_CONNECT);
     server.sendHeader("Access-Control-Allow-Origin", "*");
     server.sendHeader("Content-Encoding", "gzip");
     server.send_P(200, "text/html", HTML_CONNECT,len);  
   } else {
-    long len = sizeof(HTML_CONNECT);
+    long len = sizeof(HTML_MAIN);
     server.sendHeader("Access-Control-Allow-Origin", "*");
     server.sendHeader("Content-Encoding", "gzip");
     server.send_P(200, "text/html", HTML_MAIN ,len); 
@@ -81,7 +81,7 @@ void setCredentials_rest(){
       }
       //todo check both are set
       currentPage = PAGE_WIFI_CONNECT;
-      server.send(200, "text/plain", server.arg("plain"));
+      server.send(200, "text/plain", "Device connecting. You may reconnect to your normal wifi network. After your device is finished connecting to the network you may find its IP address on the status page found in the devices main menu.");
     } 
   } else {
     server.send(404, "text/plain", "Resouce Not Found");
@@ -110,17 +110,43 @@ void handle_settings_rest(){
   StaticJsonDocument<1024> doc;
   if (server.method() == HTTP_POST) {
     //POST
-    for (uint8_t i = 0; i < server.args(); i++) {
-      if(server.argName(i).equals("refreshInterval")){
-        staticData.refreshInterval = server.arg(i).toInt();
-      } else if(server.argName(i).equals("sleepDelay")){
-        staticData.sleepDelay = server.arg(i).toInt();
-      } else if(server.argName(i).equals("nodeName")){
-        server.arg(i).toCharArray(staticData.nodeName,64);
-      } else if(server.argName(i).equals("temperatureUnit")){
-        server.arg(i).toCharArray(&staticData.temperatureUnit,1);
-      }
+    Serial.println("GOT POST");
+    StaticJsonDocument<1024> input;
+    DeserializationError error = deserializeJson(input, server.arg(0));
+    // Test if parsing succeeds.
+    if (error) {
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.f_str());
+      server.send(400, "plain/text","Bad JSON String");
+      return;
     }
+    if(input.containsKey("refreshInterval")){
+      staticData.refreshInterval = input["refreshInterval"];
+    }
+    if(input.containsKey("sleepDelay")){
+      staticData.sleepDelay = input["sleepDelay"];
+    }
+    if(input.containsKey("nodeName")){
+      //Serial.println("GOT NODENAME");
+      //memcpy((char *)input["nodeName"],&staticData.nodeName,64);
+      const char* nodeName = input["nodeName"];
+      //Serial.println(nodeName);
+      //Serial.println(strlen(nodeName));
+      //strcpy((char *)staticData.nodeName,(char *)nodeName);
+      int i;
+      for(i = 0; i < 15 && i < strlen(nodeName); i++){
+        staticData.nodeName[i] = nodeName[i];
+      }
+      staticData.nodeName[i] = '\0';
+    }
+    if(input.containsKey("temperatureUnit")){
+      //memcpy((char *)input["temperatureUnit"],&staticData.temperatureUnit,1);
+       const char* temperatureUnit = input["temperatureUnit"];
+       if(strlen(temperatureUnit) > 0){
+        staticData.temperatureUnit = temperatureUnit[0];
+       }
+    }
+    writeEEPROM();
   }
   doc["refreshInterval"] = staticData.refreshInterval;
   doc["sleepDelay"] = staticData.sleepDelay;

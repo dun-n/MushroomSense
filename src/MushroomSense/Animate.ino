@@ -14,7 +14,7 @@ struct Animation {
   int targetValue;
 };
 
-uint16_t updateAnimation(struct Animation* animation){
+void updateAnimation(struct Animation* animation){
   unsigned long currTime = millis();
   if(animation->isActive && currTime >= animation->startTime){
     uint16_t elapsedTime = ((int)(currTime - animation->startTime) % animation->duration);
