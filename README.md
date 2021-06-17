@@ -29,12 +29,12 @@ If your looking to write some this project can be modified to support any sensor
 ## Wizard 
 
 ### Linux 
-[Download Wizard for Linux](https://github.com/dun-n/MushroomSense/releases)
+[Download ](https://github.com/dun-n/MushroomSense/releases)
 
 Unzip the folder and open it in a terminal window. run `./wizard`
 
 ### Windows
-[Download Wizard for Windows](https://github.com/dun-n/MushroomSense/releases)
+[Download](https://github.com/dun-n/MushroomSense/releases)
 
 Unzip the folder and double click wizard.exe
 
