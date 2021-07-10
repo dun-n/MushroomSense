@@ -34,12 +34,10 @@ wizard will work. The simplest way to install all the nessiary drivers and flash
 still using the arduino IDE.
 
 ### Linux 
-[Download ](https://github.com/dun-n/MushroomSense/releases)
 
 Unzip the folder and open it in a terminal window. run `./wizard`
 
 ### Windows
-[Download](https://github.com/dun-n/MushroomSense/releases)
 
 Unzip the folder and double click wizard.exe
 
