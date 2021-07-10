@@ -28,6 +28,11 @@ If your looking to write some this project can be modified to support any sensor
 
 ## Wizard 
 
+The wizard is a work in progress, the idea is to make the installation stand alone and not require the arduino IDE but 
+I the driver for the board is still required so that needs to be installed on your computer before the 
+wizard will work. The simplest way to install all the nessiary drivers and flash the code to the board is probably 
+still using the arduino IDE.
+
 ### Linux 
 [Download ](https://github.com/dun-n/MushroomSense/releases)
 
