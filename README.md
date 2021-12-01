@@ -1,8 +1,4 @@
 # MushroomSense
-**This project is still a work in progress.** There is a python based install wizard with Windows, and Linux 
-executables. If someone wants to spend a bit of time building an executable for MacOS I'm sure other mac users 
-would appreciate it.
-
 I thought it would be cool to set up a fully automated mushroom farm. Much like animals, 
 mushrooms expel CO2 as a byproduct of respiration. As such CO2 levels can be an interesting 
 variable to track and manipulate when growing mushrooms. However CO2 sensors are pricey and 
@@ -12,6 +8,10 @@ it'll measure temperature and humiditiy and having good control over these two v
 growing mushrooms (although if that's all your looking for there are dirt cheep solutions available 
 [I've got one of these for example](https://smile.amazon.com/dp/B087313N8F/ref=cm_sw_em_r_mt_dp_8T7RPHPERMNQWD257779)
 and its pretty easy to get integrated with home assistant with a bit of google-ing).
+
+**This project is still a work in progress.** There is a python based install wizard with Windows, and Linux 
+executables. If someone wants to spend a bit of time building an executable for MacOS I'm sure other mac users 
+would appreciate it.
 
 ## Hardware
 The hardware is all available from Adafruit:
@@ -28,18 +28,20 @@ If your looking to write some this project can be modified to support any sensor
 
 ## Wizard 
 
-The wizard is a work in progress, the idea is to make the installation stand alone and not require the arduino IDE but 
-I the driver for the board is still required so that needs to be installed on your computer before the 
-wizard will work. The simplest way to install all the nessiary drivers and flash the code to the board is probably 
-still using the arduino IDE.
+The Wizard can be downloaded for Linux and Windows from the [Releases Page](https://github.com/dun-n/MushroomSense/releases) of this project. 
+Download the package for your OS and Follow the instructions for your OS Bellow.
 
 ### Linux 
 
-Unzip the folder and open it in a terminal window. run `./wizard`
+* Unzip the folder and open it in a terminal window. run `./wizard`
+* If you don't see the port for the board listed you may need to run it as su `sudo ./wizard`
 
 ### Windows
 
-Unzip the folder and double click wizard.exe
+* First you'll also need to install the [CP2104 USB Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) 
+to connect to the Feather HUZZAH over USB.
+
+* Next Unzip the folder and double click wizard.exe
 
 ### MacOS
 Currently the only option is to run the wizard from source. The Windows and Linux executables are built using 
@@ -55,13 +57,18 @@ There are several dependencies you may need to install.
 
 `pip install esptool`
 
+You'll also need to install the [CP2104 USB Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers) 
+to connect to the Feather HUZZAH over USB.
+
 ## Flash The Code
 If you have the Arduino IDE you can open ./src/MushroomSense.ino and flash the project from there (You will need to install some libraries and configure 
 the board see Arduino IDE Setup bellow)
 
-If you just want the code on the board Run:
-* `pip install esptool`
-* `bash upload.sh {{PORT}}`
+If you just want the code on the board 
+* If you are running MacOS or Windows you'll need to install a driver for the board,
+
+* Run: `pip install esptool`
+* Run: `bash upload.sh {{PORT}}`
 
 ## Arduino IDE Setup 
 
