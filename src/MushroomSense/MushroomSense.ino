@@ -19,8 +19,8 @@ Adafruit_SH110X display = Adafruit_SH110X(64, 128, &Wire);
 Adafruit_SCD30  scd30;
 ESP8266WebServer server(80);
 struct { 
-  char initialized[16]     = "INITIALIZED";
-  char ssid[32]     = "";
+  char initialized[16] = "INITIALIZED";
+  char ssid[32] = "";
   char password[64] = "";
   uint16_t refreshInterval = 2;
   unsigned int sleepDelay = 0;
@@ -57,6 +57,7 @@ unsigned long lastCUp = 0;  // the last time the output pin was toggled
 
 
 boolean inputReady = false;
+boolean setupComplete = false;
 boolean enableSensors = true;
 uint16_t currentPage = PAGE_SPLASH;
 unsigned long wakeTime = 0;
@@ -88,7 +89,7 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   server.begin();
-  
+  setupComplete = true;
 }
 
 //main loop
@@ -99,10 +100,10 @@ void loop() {
 }
 
 void mainUpdate(){
-  if(enableSensors) readSensors();
+  if(setupComplete && enableSensors) readSensors();
   handleUserInput();
-  handleSerialInput();
-  server.handleClient();
+  if(setupComplete) handleSerialInput();
+  if(setupComplete) server.handleClient();
   yield();
 }
 

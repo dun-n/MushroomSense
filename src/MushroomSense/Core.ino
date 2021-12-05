@@ -49,7 +49,17 @@ void factoryReset(){
     display.print("Facotry Rest");
     display.display();
     initEEPROM(true);
-    resetFunc();
+    delay(200);
+    display.print(".");
+    display.display();
+    delay(200);
+    display.print(".");
+    display.display();
+    delay(200);
+    display.print(".");
+    display.display();
+    delay(200);
+    ESP.restart();
   }
 }
 

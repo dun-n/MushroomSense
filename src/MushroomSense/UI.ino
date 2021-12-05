@@ -80,6 +80,7 @@ void pageDispach(){
           staticData.temperatureUnit = 'F';
           break;
       }
+      writeEEPROM();
       currentPage = PAGE_MAIN_MENU;
       break;
     case PAGE_STATUS:
@@ -162,9 +163,8 @@ void splash(){
   }
   if(buttonACount > 10){
     factoryReset();
-  } else {
-    currentPage = PAGE_HOME;
   }
+  currentPage = PAGE_HOME;
 }
 
 void handleSetupWifiReportInputs(char button, uint16_t state){
@@ -372,7 +372,7 @@ void setupAccessPoint(){
 }
 
 
-void handlePromtButtons(char button, uint16_t state){
+void handlePromptButtons(char button, uint16_t state){
   if(state == LOW){
     if(button == 'A'){
       selection ++;
@@ -386,7 +386,7 @@ void handlePromtButtons(char button, uint16_t state){
 
 boolean prompt(char* text){
   currentPage = PAGE_PROMPT;
-  initializeInputs(&handlePromtButtons);
+  initializeInputs(&handlePromptButtons);
   while(!commit){
     display.clearDisplay();
     if(isScreenOn()){
@@ -409,7 +409,7 @@ boolean prompt(char* text){
       display.setCursor(52, 18);
       display.print("Yes");
   
-      if(selection % 2 == 1){
+      if(abs(selection) % 2 == 1){
         display.fillRect(50, 38, 26, 18, SH110X_WHITE);
         display.setTextColor(SH110X_BLACK);
       } else {
