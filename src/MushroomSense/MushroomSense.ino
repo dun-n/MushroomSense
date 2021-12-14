@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include <SensirionI2CScd4x.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
@@ -16,7 +17,9 @@
 
 //global variables 
 Adafruit_SH110X display = Adafruit_SH110X(64, 128, &Wire);
+short connectedSensor = 0;
 Adafruit_SCD30  scd30;
+SensirionI2CScd4x scd4x;
 ESP8266WebServer server(80);
 struct { 
   char initialized[16] = "INITIALIZED";
@@ -108,7 +111,12 @@ void mainUpdate(){
 }
 
 boolean isScreenOn(){
-  return staticData.sleepDelay == 0 || (millis() - wakeTime) < staticData.sleepDelay;
+  unsigned long timeNow = millis();
+  if(timeNow < wakeTime){
+    // the counter restet (happens after 50 days) we'll wake up to reset wakeTime
+    wakeUp();
+  }
+  return staticData.sleepDelay == 0 || (timeNow - wakeTime) < staticData.sleepDelay;
 }
 
 void wakeUp(){

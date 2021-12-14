@@ -1,15 +1,75 @@
+void printUint16Hex(uint16_t value) {
+    Serial.print(value < 4096 ? "0" : "");
+    Serial.print(value < 256 ? "0" : "");
+    Serial.print(value < 16 ? "0" : "");
+    Serial.print(value, HEX);
+}
+
+void printSerialNumber(uint16_t serial0, uint16_t serial1, uint16_t serial2) {
+    Serial.print("Serial: 0x");
+    printUint16Hex(serial0);
+    printUint16Hex(serial1);
+    printUint16Hex(serial2);
+    Serial.println();
+}
+
+unsigned long lastDataRead = 0;
+
 /*
  * Called durring setup, code to initialize sensors
  * add code to initialize custom sensors here
  */
 void initSensors(){
   // Try to initialize!
-  if (!scd30.begin()) {
-    Serial.println("Failed to find SCD30 chip");
-  }
-  Serial.println("SCD30 Found!");
-  if (!scd30.setMeasurementInterval(2)){
-    Serial.println("Failed to set measurement interval");
+  if (scd30.begin()) {
+    Serial.println("SCD30 Found!");
+    connectedSensor = 30;
+    if (!scd30.setMeasurementInterval(2)){
+      Serial.println("Failed to set measurement interval");
+    }
+  } else {
+    uint16_t error;
+    char errorMessage[256];
+
+    scd4x.begin(Wire);
+
+    // stop potentially previously started measurement
+    error = scd4x.stopPeriodicMeasurement();
+    if (error) {
+        Serial.print("Error trying to execute stopPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
+
+    uint16_t serial0;
+    uint16_t serial1;
+    uint16_t serial2;
+    error = scd4x.getSerialNumber(serial0, serial1, serial2);
+    if (error) {
+        Serial.print("Error trying to execute getSerialNumber(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    } else {
+        printSerialNumber(serial0, serial1, serial2);
+        connectedSensor = 40;
+    }
+
+    if(staticData.refreshInterval < 5){
+      staticData.refreshInterval = 5;
+      writeEEPROM();
+    }
+
+    // Start Measurement
+    if(staticData.refreshInterval < 30){
+      error = scd4x.startPeriodicMeasurement();
+    } else {
+      error = scd4x.startLowPowerPeriodicMeasurement();
+    }
+    if (error) {
+        Serial.print("Error trying to execute startPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
   }
 }
 
@@ -18,35 +78,106 @@ void initSensors(){
  * add code to retreive values from custom sensors here
  */
 void readSensors(){
-    if (scd30.dataReady()){
-    Serial.println("===== Data available =====");
- 
-    if (!scd30.read()){ Serial.println("Error reading sensor data"); return; }
-    validReads ++;
-    tempC = scd30.temperature;
-    rh = scd30.relative_humidity;
-    co2 = scd30.CO2;
-    Serial.print("TEMP: ");
-    Serial.println(tempC);
-    Serial.print("RH: ");
-    Serial.println(rh);
-    Serial.print("CO2: ");
-    Serial.println(co2);
-    Serial.println("==========================");
-
-    if(validReads == 2){
-      if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
-        Serial.println("Failed to set measurement interval");
+  if(connectedSensor == 30){
+      if (scd30.dataReady()){
+      Serial.println("===== Data available =====");
+   
+      if (!scd30.read()){ Serial.println("Error reading sensor data"); return; }
+      validReads ++;
+      lastDataRead = millis();
+      tempC = scd30.temperature;
+      rh = scd30.relative_humidity;
+      co2 = scd30.CO2;
+      Serial.print("TEMP: ");
+      Serial.println(tempC);
+      Serial.print("RH: ");
+      Serial.println(rh);
+      Serial.print("CO2: ");
+      Serial.println(co2);
+      Serial.println("==========================");
+  
+      if(validReads == 2){
+        if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
+          Serial.println("Failed to set measurement interval");
+        }
+        initialized = true;
       }
-      initialized = true;
+    }
+  } else if (connectedSensor == 40){
+    uint16_t error;
+    char errorMessage[256];
+    uint16_t readyStatus = 0;
+    error = scd4x.getDataReadyStatus(readyStatus);
+    readyStatus &= 0b0000011111111111;
+    if (error) {
+          Serial.print("Error trying to execute getDataReadyStatus(): ");
+          errorToString(error, errorMessage, 256);
+          Serial.println(errorMessage);
+    }
+    if(readyStatus && refreshIntervalOver()){
+        Serial.println("===== Data available =====");
+        uint16_t co2_int;
+        error = scd4x.readMeasurement(co2_int, tempC, rh);
+        co2 = (float) co2_int;
+        if (error) {
+            Serial.print("Error trying to execute readMeasurement(): ");
+            errorToString(error, errorMessage, 256);
+            Serial.println(errorMessage);
+        } else if (co2 == 0) {
+            Serial.println("Invalid sample detected, skipping.");
+        } else {
+          lastDataRead = millis();
+          validReads ++;
+          Serial.print("TEMP: ");
+          Serial.println(tempC);
+          Serial.print("RH: ");
+          Serial.println(rh);
+          Serial.print("CO2: ");
+          Serial.println(co2);
+        }
+        Serial.println("==========================");
     }
   }
 }
 
+boolean refreshIntervalOver(){
+  unsigned long timeNow = millis();
+  if(timeNow - (staticData.refreshInterval*1000) >= lastDataRead){
+    return true;
+  } else if(lastDataRead > timeNow){
+    //over flow happened this should only happen every 50 days or so of continuios use
+    return true;
+  }
+  return false;
+}
+
 void setSensorRefreshInterval(int selection){
+  uint16_t error;
+  char errorMessage[256];
   staticData.refreshInterval = selection;
   writeEEPROM();
-  if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
-    Serial.println("Failed to set measurement interval");
+  if(connectedSensor == 30){
+    if (!scd30.setMeasurementInterval(staticData.refreshInterval)){
+      Serial.println("Failed to set measurement interval");
+    }
+  } else if (connectedSensor == 40){
+    // stop potentially previously started measurement
+    error = scd4x.stopPeriodicMeasurement();
+    if (error) {
+        Serial.print("Error trying to execute stopPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
+    // restart periodic measurement
+    if(staticData.refreshInterval < 30){
+      error = scd4x.startPeriodicMeasurement();
+    } else {
+      error = scd4x.startLowPowerPeriodicMeasurement();
+    }
+    if (error) {
+        Serial.print("Error trying to execute startPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, 256);
+        Serial.println(errorMessage);
+    }
   }
 }

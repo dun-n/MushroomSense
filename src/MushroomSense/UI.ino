@@ -18,7 +18,10 @@ void pageDispach(){
       break;
     }
   }
-   
+
+  int minRefreshVal = 2;
+  if(connectedSensor == 40){minRefreshVal = 5;}
+  
   switch(currentPage){
     case PAGE_MAIN_MENU:
       menu(MAIN_MENU, MAIN_MENU_LENGTH, 0);
@@ -60,7 +63,7 @@ void pageDispach(){
       setupWifi(true);
       break;
     case PAGE_REFRESH_INTERVAL:
-      setNumber("Refresh Interval","s", staticData.refreshInterval,2,120);
+      setNumber("Refresh Interval","s", staticData.refreshInterval,minRefreshVal,120);
       setSensorRefreshInterval(selection);
       currentPage = PAGE_MAIN_MENU;
       break;

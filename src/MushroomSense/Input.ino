@@ -33,7 +33,7 @@ void handleUserInput(){
     
     if(inputReady){
       //BUTTON A
-      if ((currTime - lastADown) > throttleDelay) {
+      if ((currTime - lastADown) > throttleDelay || currTime < lastADown) {
         if(AState == HIGH && a == LOW){
           AState = LOW;
           lastADown = currTime;
@@ -43,7 +43,7 @@ void handleUserInput(){
           }
         }
       }
-      if ((currTime - lastADown) > holdDelay) {
+      if ((currTime - lastADown) > holdDelay || currTime < lastADown) {
          if(AState == LOW && a == LOW){
           AState = LOW;
           lastADown = currTime;
@@ -53,7 +53,7 @@ void handleUserInput(){
           }
         }
       }
-      if ((currTime - lastAUp) > throttleDelay) {
+      if ((currTime - lastAUp) > throttleDelay || currTime < lastAUp) {
         if(AState == LOW && a == HIGH){
           AState = HIGH;
           lastAUp = currTime;
@@ -65,7 +65,7 @@ void handleUserInput(){
       }
       
       //BUTTON B
-      if ((currTime - lastBDown) > throttleDelay) {
+      if ((currTime - lastBDown) > throttleDelay || currTime < lastBDown) {
         if(BState == HIGH &&  b == LOW){
           BState = LOW;
           lastBDown = currTime;
@@ -75,7 +75,7 @@ void handleUserInput(){
           }
         }
       }
-      if ((currTime - lastBDown) > holdDelay) {
+      if ((currTime - lastBDown) > holdDelay || currTime < lastBDown) {
          if(BState == LOW && b == LOW){
           BState = LOW;
           lastBDown = currTime;
@@ -85,7 +85,7 @@ void handleUserInput(){
           }
         }
       }
-      if ((currTime - lastBUp) > throttleDelay) {
+      if ((currTime - lastBUp) > throttleDelay || currTime < lastBUp) {
         if(BState == LOW && b == HIGH){
           BState = HIGH;
           lastBUp = currTime;
@@ -97,7 +97,7 @@ void handleUserInput(){
       }
       
       //BUTTON C
-      if ( (currTime - lastCDown) > throttleDelay) {
+      if ( (currTime - lastCDown) > throttleDelay || currTime < lastCDown) {
         if(CState == HIGH && c == LOW){
           CState = LOW;
           lastCDown = currTime;
@@ -107,7 +107,7 @@ void handleUserInput(){
           }
         }
       }
-      if ((currTime - lastCDown) > holdDelay) {
+      if ((currTime - lastCDown) > holdDelay || currTime < lastCDown) {
          if(CState == LOW && c == LOW){
           CState = LOW;
           lastCDown = currTime;
@@ -117,7 +117,7 @@ void handleUserInput(){
           }
         }
       }
-      if ( (currTime - lastCUp) > throttleDelay) {
+      if ( (currTime - lastCUp) > throttleDelay || currTime < lastCUp) {
         if(CState == LOW && c == HIGH){
           CState = HIGH;
           lastCUp = currTime;

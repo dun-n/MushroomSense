@@ -17,14 +17,29 @@ would appreciate it.
 The hardware is all available from Adafruit:
 * [Assembled Feather HUZZAH w/ ESP8266 WiFi With Stacking Headers](https://www.adafruit.com/product/3213) - $19.95
 * [Adafruit FeatherWing OLED - 128x64 OLED Add-on For Feather - STEMMA QT / Qwiic](https://www.adafruit.com/product/4650) -$14.95
-* [Adafruit SCD-30 - NDIR CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/4867) - $58.95
 * [STEMMA QT / Qwiic JST SH 4-Pin Cable - 200mm Long](https://www.adafruit.com/product/4401) -$0.95
+
+One of the following true CO2 Sensors
+* [Adafruit SCD-30 - NDIR CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/4867) - $58.95
+  * Measures 400 ppm – 10,000 ppm CO2
+  * Accuracy: ±(30 ppm + 3% of reading)
+  * Larger form factor
+* [Adafruit SCD-40 - True CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/5187) - $49.50
+  * Measures: 400 ppm - 2000 ppm CO2
+  * Accuracy: ±(50 ppm + 5% of reading)
+  * Smaller form factor
+*[Adafruit SCD-41 - True CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/5190) - $59.50
+  * Measures 400 ppm - 5000 ppm CO2
+  * Accuracy: ±(40 ppm + 5% of reading)
+  * Smaller form factor
+ 
+Do some research see what suits your needs. The SCD-40 is probably sufficient for most people's needs.
  
 These prices could change but the total comes out to about $95. Not too shabby for a wifi enabled CO2 sensor. 
 I know the sensor is a bit pricey but that's because its the real deal. The cheaper CO2 sensors measure effective CO2. 
 essentially they measure some other gasses and use some math to make an educated guess on how much CO2 there is. A 
 future goal is to support one of these cheaper sensors so people can save some money and upgrade later if they wish. 
-If your looking to write some this project can be modified to support any sensor you want.
+If your looking to write some code this project can be modified to support any sensor you want.
 
 ## Wizard 
 
@@ -91,6 +106,7 @@ Tools -> Manage Libraries
 * Adafruit_GFX
 * Adafruit_SH110X
 * Adafruit_SCD30
+* Sensirion I2C SCD4x
 * ArduinoJson
 
 ### Compile and Upload
