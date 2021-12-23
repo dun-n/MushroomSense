@@ -45,6 +45,7 @@ void (*buttonHandler)(char, uint16_t) = NULL; //set to function that takes a cha
 int selection = 0;
 boolean commit = false;
 
+boolean _inputLock = false;
 uint16_t AState = HIGH;   
 uint16_t BState = HIGH; 
 uint16_t CState = HIGH; 
@@ -77,19 +78,11 @@ void setup() {
   Serial.begin(115200);
   Serial.println("");
   if(debug) Serial.setDebugOutput(true);
-  initSensors();
   initEEPROM(false);
+  initSensors();
   setupWifi(false);
   setupServer();
-  //setupAccessPoint();
-  //setupWifi();
   clearDisplay();
-
-  Serial.print("Measurement Interval: "); 
-  Serial.print(scd30.getMeasurementInterval()); 
-  Serial.println(" seconds");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
   
   server.begin();
   setupComplete = true;

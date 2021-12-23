@@ -15,6 +15,16 @@ void initializeInputs(void (*bh)(char, uint16_t)){
   initializeInputs(bh,0);
 }
 
+void lockInput(){
+  if(debug) Serial.println("User Input Locked");
+  _inputLock = true;
+}
+
+void unlockInput(){
+  if(debug) Serial.println("User Input UnLocked");
+  _inputLock = false;
+}
+
 unsigned long throttleDelay = 50;    // the debounce time; increase if the output flickers
 unsigned long holdDelay = 200;    
 
@@ -26,6 +36,7 @@ void callButtonHandler(char button, uint16_t state){
 }
 
 void handleUserInput(){
+  if(!_inputLock){
     uint16_t a = digitalRead(BUTTON_A);
     uint16_t b = digitalRead(BUTTON_B);
     uint16_t c = digitalRead(BUTTON_C);
@@ -135,5 +146,5 @@ void handleUserInput(){
         inputReady = true;
       }
     }
-
+  }
 }

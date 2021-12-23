@@ -53,7 +53,5 @@ done
 
 rm -rf temp.*
 
-echo '' > extern.h
-
 
 echo "done!"

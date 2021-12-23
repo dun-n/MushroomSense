@@ -27,6 +27,9 @@ void initSensors(){
     if (!scd30.setMeasurementInterval(2)){
       Serial.println("Failed to set measurement interval");
     }
+    Serial.print("Measurement Interval: "); 
+    Serial.print(scd30.getMeasurementInterval()); 
+    Serial.println(" seconds");
   } else {
     uint16_t error;
     char errorMessage[256];
@@ -50,6 +53,7 @@ void initSensors(){
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     } else {
+        Serial.println("SCD4X Found!");
         printSerialNumber(serial0, serial1, serial2);
         connectedSensor = 40;
     }

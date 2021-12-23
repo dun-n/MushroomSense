@@ -102,7 +102,7 @@
 
   //replace res path
   const elms = document.querySelectorAll(".res_data");
-  const ip = "192.168.0.223";
+  const ip = window.location.host;
   elms.forEach(
     (elm)=>{
       elm.innerHTML = "http://"+ip+"/api/v1/sensors";

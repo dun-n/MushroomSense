@@ -179,7 +179,7 @@ void handleSetupWifiReportInputs(char button, uint16_t state){
 
 void setupWifi(boolean report){
   if(strlen(staticData.ssid) > 0 && strlen(staticData.password) > 0){
-    initializeInputs(NULL);
+    lockInput();
     WiFi.begin(staticData.ssid, staticData.password);
     Serial.println("Connecting to WIFI");
     Serial.print("staticData.ssid ");
@@ -246,7 +246,9 @@ void setupWifi(boolean report){
       display.display();
       mainUpdate();
     }
-
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+    unlockInput();
     if(report){
       initializeInputs(&handleSetupWifiReportInputs);
       while(currentPage == PAGE_WIFI_CONNECT){
@@ -276,7 +278,7 @@ void setupWifi(boolean report){
         mainUpdate();
       }
     } else {
-      currentPage = PAGE_HOME;
+      // do nothing we should get dumped back into previos page
     }
   } else {
      initializeInputs(&handleSetupWifiReportInputs);
@@ -431,7 +433,9 @@ boolean prompt(char* text){
 }
 
 void handleHomeButtons(char button, uint16_t state){
+  Serial.println("HOME Input");
   if(button == 'B' && state == LOW){
+    Serial.println("MENU");
     currentPage = PAGE_MAIN_MENU;
   }
 }

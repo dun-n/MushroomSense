@@ -10,7 +10,7 @@ void initPeripherals(){
 
 void initEEPROM(boolean fource){
   struct { 
-    char initialized[16] = "INITIALIZED";
+    char initialized[16] = "";
     char ssid[32]     = "";
     char password[64] = "";
     uint16_t refreshInterval = 2;
@@ -21,8 +21,10 @@ void initEEPROM(boolean fource){
   uint addr = 0;
   EEPROM.get(addr,staticDataTemp);
   if(fource || strcmp(staticDataTemp.initialized,"INITIALIZED") != 0){
+    if(debug) Serial.println("EEPROM WRITE");
     writeEEPROM();
   } else {
+    if(debug) Serial.println("EEPROM READ");
     readEEPROM();
   }
 }
@@ -48,6 +50,9 @@ void factoryReset(){
     display.setCursor(0,0);
     display.print("Facotry Rest");
     display.display();
+    for (int i = 0; i < 512; i++) {
+      EEPROM.write(i, 0);
+    }
     initEEPROM(true);
     delay(200);
     display.print(".");
@@ -133,6 +138,10 @@ void handleSerialInput(){
         strcpy(staticData.ssid, argPoinjters[1]);
         strcpy(staticData.password, argPoinjters[2]);
         writeEEPROM();
+        Serial.print("ssid_arg: ");
+        Serial.println(staticData.ssid);
+        Serial.print("ssid_arg: ");
+        Serial.println(staticData.password);
         setupWifi(false);
     }
   }
