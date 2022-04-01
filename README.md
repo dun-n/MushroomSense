@@ -1,4 +1,7 @@
 # MushroomSense
+
+Check [my website](https://dun-n.com/projects/mushroom-sense/) for a more in depths walk through of mushroom sense. 
+
 I thought it would be cool to set up a fully automated mushroom farm. Much like animals, 
 mushrooms expel CO2 as a byproduct of respiration. As such CO2 levels can be an interesting 
 variable to track and manipulate when growing mushrooms. However CO2 sensors are pricey and 
