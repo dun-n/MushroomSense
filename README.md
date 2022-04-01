@@ -28,7 +28,7 @@ One of the following true CO2 Sensors
   * Measures: 400 ppm - 2000 ppm CO2
   * Accuracy: ±(50 ppm + 5% of reading)
   * Smaller form factor
-*[Adafruit SCD-41 - True CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/5190) - $59.50
+* [Adafruit SCD-41 - True CO2 Temperature and Humidity Sensor - STEMMA QT / Qwiic](https://www.adafruit.com/product/5190) - $59.50
   * Measures 400 ppm - 5000 ppm CO2
   * Accuracy: ±(40 ppm + 5% of reading)
   * Smaller form factor
