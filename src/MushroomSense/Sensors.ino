@@ -23,6 +23,13 @@ void initSensors(){
   // Try to initialize!
   if (scd30.begin()) {
     Serial.println("SCD30 Found!");
+    // make sure self Calibration is off
+    scd30.selfCalibrationEnabled(false);
+    if (scd30.selfCalibrationEnabled()) {
+      Serial.println("Self calibration enabled");
+    } else {
+      Serial.println("Self calibration disabled");
+    }
     connectedSensor = 30;
     if (!scd30.setMeasurementInterval(2)){
       Serial.println("Failed to set measurement interval");
@@ -183,5 +190,34 @@ void setSensorRefreshInterval(int selection){
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     }
+  }
+}
+
+
+void calibrateCO2(int co2Ref){
+  if(connectedSensor == 30){
+    if (!scd30.forceRecalibrationWithReference(co2Ref)){
+      Serial.println("Failed to force recalibration with reference");
+    } else {
+      Serial.print("Forced Recalibration reference: ");
+      Serial.print(scd30.getForcedCalibrationReference());
+      Serial.println(" ppm");
+    }
+  } else {
+    Serial.println("Calibration only avalible for SC30");
+  }
+}
+
+void calibrateTemp(int tespOffset){
+  if(connectedSensor == 30){
+    if (!scd30.setTemperatureOffset(tespOffset)){ // 19.84 degrees celcius
+      Serial.println("Failed to set temperature offset");
+    } else {
+      Serial.print("Temperature offset: ");
+      Serial.print((float)scd30.getTemperatureOffset()/100.0);
+      Serial.println(" degrees C");
+    }
+  } else {
+    Serial.println("Calibration only avalible for SC30");
   }
 }

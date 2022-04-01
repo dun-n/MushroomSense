@@ -8,15 +8,17 @@
 #define PAGE_SCREEN_TIMEOUT  7
 #define PAGE_TEMP_UNIT  8
 #define PAGE_STATUS  9
+#define PAGE_CALIBRATE  10
 
-uint16_t MAIN_MENU_LENGTH = 7;
-char* MAIN_MENU[7] = {
+uint16_t MAIN_MENU_LENGTH = 8;
+char* MAIN_MENU[8] = {
   "Exit",
   "Configure WIFI",
   "Connect WIFI",
   "Refresh Interval",
   "Screen Timeout",
   "Temperature Unit",
+  "CO2 Calibration",
   "Status"
 };
 

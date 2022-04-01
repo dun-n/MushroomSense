@@ -143,6 +143,12 @@ void handleSerialInput(){
         Serial.print("ssid_arg: ");
         Serial.println(staticData.password);
         setupWifi(false);
-    }
+    } else if (strcmp(argPoinjters[0],"CALIBRATE_CO2") == 0) {
+      int co2ref = atoi(argPoinjters[1]);
+      calibrateCO2(co2ref);
+    } else if (strcmp(argPoinjters[0],"CALIBRATE_TEMP") == 0) {
+      int tempOffset = atoi(argPoinjters[1]);
+      calibrateTemp(tempOffset);
+    } 
   }
 }

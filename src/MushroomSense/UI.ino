@@ -51,6 +51,10 @@ void pageDispach(){
           Serial.println("PAGE_TEMP_UNIT");
           break;
         case 6:
+          currentPage = PAGE_CALIBRATE;
+          Serial.println("PAGE_CALIBRATE");
+          break;
+        case 7:
           currentPage = PAGE_STATUS;
           Serial.println("PAGE_STATUS");
           break;
@@ -89,10 +93,45 @@ void pageDispach(){
     case PAGE_STATUS:
       statusPage();
       break;
+    case PAGE_CALIBRATE:
+      calabratePage();
+      break;
     case PAGE_HOME:
     default:
       homePage();
       break;
+  }
+}
+
+void handleCalabratePageInputs(char button, uint16_t state){
+  if(button == 'C' && state == LOW){
+    currentPage = PAGE_MAIN_MENU;
+  }
+}
+void calabratePage(){
+  initializeInputs(&handleCalabratePageInputs);
+  calibrateCO2(400);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SH110X_WHITE);
+  display.setRotation(1);
+  while(currentPage == PAGE_CALIBRATE){
+      display.clearDisplay();
+      if(isScreenOn()){
+        display.setCursor(0,0);
+        if(connectedSensor == 30){
+          display.println("Current CO2 level");
+          display.println("set to 400ppm");
+        } else {
+          display.println("Calibration not avalible");
+          display.println("for this sensor.");
+        }
+        display.fillRect(0, 44, 16, 17, SH110X_WHITE);
+        display.drawBitmap(0, 44, BITMAP_BACK_ICON, 16, 17, SH110X_BLACK);
+      }
+     display.display();
+     yield();
+     mainUpdate();
   }
 }
 
