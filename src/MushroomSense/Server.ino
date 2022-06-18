@@ -161,6 +161,13 @@ void handle_settings_rest(){
 
 
 void setupServer(){
+  if (!MDNS.begin(staticData.nodeName)) {             // Start the mDNS responder for .local
+    Serial.println("Error setting up MDNS responder!");
+  } else {
+    Serial.print("mDNS responder started: "); 
+    Serial.print(staticData.nodeName); 
+    Serial.println(".local"); 
+  }
   server.on("/", handle_root);
   server.on("/hass", handle_hass);
   server.on("/rest", handle_rest);

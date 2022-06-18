@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>        // Include the mDNS library
 #include "Bitmap.h"
 #include "Input.h"
 #include "UI.h"
@@ -96,6 +97,7 @@ void loop() {
 }
 
 void mainUpdate(){
+  MDNS.update();
   if(setupComplete && enableSensors) readSensors();
   handleUserInput();
   if(setupComplete) handleSerialInput();
