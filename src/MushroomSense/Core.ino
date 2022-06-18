@@ -14,7 +14,7 @@ void initEEPROM(boolean fource){
     char ssid[32]     = "";
     char password[64] = "";
     uint16_t refreshInterval = 2;
-    unsigned int sleepDelay = 0;
+    unsigned int sleepDelay = 60000;
     char nodeName[16] = "MushroomSense";
     char temperatureUnit = 'F';
   } staticDataTemp;

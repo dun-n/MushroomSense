@@ -27,7 +27,7 @@ struct {
   char ssid[32] = "";
   char password[64] = "";
   uint16_t refreshInterval = 2;
-  unsigned int sleepDelay = 0;
+  unsigned int sleepDelay = 60000; // default to a minute so scrren doesn't burn in
   char nodeName[16] = "MushroomSense";
   char temperatureUnit = 'F';
 } staticData;
